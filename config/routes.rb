@@ -6,6 +6,7 @@ Sidekiq::Web.use(Rack::Auth::Basic) do |username, password|
 end
 
 Rails.application.routes.draw do
+  devise_for :users
   mount Sidekiq::Web => "/sidekiq"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
