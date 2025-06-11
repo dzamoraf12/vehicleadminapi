@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:15
+    env_file: .env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+  backend:
+    build: .
+    entrypoint: ["/app/bin/docker-entrypoint"]
+    command: bundle exec rails s -b 0.0.0.0
+    volumes:
+      - ".:/app"
+    env_file: .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+  sidekiq:
+    build: .
+    command: bundle exec sidekiq
+    volumes:
+      - ".:/app"
+    env_file: .env
+    depends_on:
+      - backend
+      - redis
+volumes:
+  db_data:
