@@ -7,3 +7,21 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+User.find_or_create_by!(email: ENV.fetch("API_ADMIN_USER_EMAIL") { "admin@vehicles.com" }) do |user|
+  user.password = ENV.fetch("API_ADMIN_USER_PASS") { "password" }
+  user.password_confirmation = ENV.fetch("API_ADMIN_USER_PASS") { "password" }
+  user.role = :admin
+end
+
+User.find_or_create_by!(email: ENV.fetch("API_TECHNICIAN_USER_EMAIL") { "technician@vehicles.com" }) do |user|
+  user.password = ENV.fetch("API_TECHNICIAN_USER_PASS") { "password" }
+  user.password_confirmation = ENV.fetch("API_TECHNICIAN_USER_PASS") { "password" }
+  user.role = :tecnico
+end
+
+User.find_or_create_by!(email: ENV.fetch("API_DRIVER_USER_EMAIL") { "driver@vehicles.com" }) do |user|
+  user.password = ENV.fetch("API_DRIVER_USER_PASS") { "password" }
+  user.password_confirmation = ENV.fetch("API_DRIVER_USER_PASS") { "password" }
+  user.role = :chofer
+end

@@ -6,9 +6,9 @@ if [ -z "${LD_PRELOAD+x}" ]; then
     export LD_PRELOAD
 fi
 
-# Install gems if Gemfile is present
+# Install gems if Gemfile is present and dependencies are not satisfied
 if [ -f Gemfile ]; then
-  bundle install
+  bundle check || bundle install
 fi
 
 # If running the rails server then create or migrate existing database

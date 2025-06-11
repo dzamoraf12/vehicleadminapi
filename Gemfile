@@ -48,3 +48,6 @@ end
 
 gem "sidekiq"
 gem "redis"
+
+gem "devise"
+gem "devise-jwt"
