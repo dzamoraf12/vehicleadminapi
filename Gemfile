@@ -44,10 +44,29 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "faker"
+  gem "shoulda-matchers"
+  gem "simplecov", require: false
+  gem "pundit-matchers", "~> 4.0"
 end
 
+# Jobs and background processing
 gem "sidekiq"
 gem "redis"
 
+# Authentication
 gem "devise"
 gem "devise-jwt"
+
+# Serialization
+gem "blueprinter"
+
+# Pagination api
+gem "pagy", "~> 9.3"
+gem "api-pagination"
+
+# Authorization system
+gem "pundit", "~> 2.5"
