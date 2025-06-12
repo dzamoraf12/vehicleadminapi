@@ -9,10 +9,12 @@ RSpec.describe "Vehicles", type: :request do
   # Test data
   let!(:user_a) { create(:user) }
   let!(:user_b) { create(:user) }
+  let!(:user_c) { create(:user, role: :chofer) }
   let!(:vehicle1) { create(:vehicle, license_plate: "AAA111", status: :disponible, user: user_a) }
   let!(:vehicle2) { create(:vehicle, license_plate: "BBB222", status: :en_taller, user: user_b) }
   let!(:vehicle3) { create(:vehicle, license_plate: "CCC333", status: :disponible, user: user_a) }
   let(:headers) { Devise::JWT::TestHelpers.auth_headers({}, user_a) }
+  let(:driver_headers) { Devise::JWT::TestHelpers.auth_headers({}, user_c) }
 
   describe "GET /vehicles" do
     it "returns all vehicles when no filters are given" do
@@ -56,6 +58,12 @@ RSpec.describe "Vehicles", type: :request do
       expect(response).to have_http_status(:unauthorized)
       expect(json["error"]).to eq("User not logged in")
     end
+
+    xit "returns 403 for unauthorized access" do
+      get vehicles_url, headers: driver_headers
+      expect(response).to have_http_status(:forbidden)
+      expect(json["error"]).to eq("You are not authorized to access this resource")
+    end
   end
 
   describe "POST /vehicles" do
@@ -86,6 +94,12 @@ RSpec.describe "Vehicles", type: :request do
       expect(response).to have_http_status(:unauthorized)
       expect(json["error"]).to eq("User not logged in")
     end
+
+    xit "returns 403 for unauthorized access" do
+      post vehicles_url, params: { vehicle: valid_attributes }, headers: driver_headers
+      expect(response).to have_http_status(:forbidden)
+      expect(json["error"]).to eq("You are not authorized to access this resource")
+    end
   end
 
   describe "GET /vehicles/:id" do
@@ -103,6 +117,12 @@ RSpec.describe "Vehicles", type: :request do
     it "returns user not logged in error" do
       get vehicle_url(vehicle1.id), as: :json
       expect(response).to have_http_status(:unauthorized)
+    end
+
+    xit "returns 403 for unauthorized access" do
+      get vehicle_url(vehicle1.id), headers: driver_headers
+      expect(response).to have_http_status(:forbidden)
+      expect(json["error"]).to eq("You are not authorized to access this resource")
     end
   end
 
@@ -130,6 +150,12 @@ RSpec.describe "Vehicles", type: :request do
       patch vehicle_url(vehicle1.id), params: { vehicle: valid_attributes }, as: :json
       expect(response).to have_http_status(:unauthorized)
       expect(json["error"]).to eq("User not logged in")
+    end
+
+    xit "returns 403 for unauthorized access" do
+      patch vehicle_url(vehicle1.id), params: { vehicle: valid_attributes }, headers: driver_headers
+      expect(response).to have_http_status(:forbidden)
+      expect(json["error"]).to eq("You are not authorized to access this resource")
     end
   end
 end
