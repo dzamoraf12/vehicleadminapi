@@ -1,0 +1,121 @@
+require "rails_helper"
+
+RSpec.describe "Vehicles", type: :request do
+  # Helper to parse JSON responses
+  def json
+    JSON.parse(response.body)
+  end
+
+  # Test data
+  let!(:user_a) { create(:user) }
+  let!(:user_b) { create(:user) }
+  let!(:vehicle1) { create(:vehicle, license_plate: "AAA111", status: :disponible, user: user_a) }
+  let!(:vehicle2) { create(:vehicle, license_plate: "BBB222", status: :en_taller, user: user_b) }
+  let!(:vehicle3) { create(:vehicle, license_plate: "CCC333", status: :disponible, user: user_a) }
+  let(:headers) { Devise::JWT::TestHelpers.auth_headers({}, user_a) }
+
+  describe "GET /vehicles" do
+    it "returns all vehicles when no filters are given" do
+      get vehicles_url, headers: headers
+      expect(response).to have_http_status(:ok)
+      plates = json.map { |v| v["license_plate"] }
+      expect(plates).to match_array(%w[AAA111 BBB222 CCC333])
+    end
+
+    it "filters by status" do
+      get vehicles_url, params: { status: "disponible" }, headers: headers
+      plates = json.map { |v| v["license_plate"] }
+      expect(plates).to match_array(%w[AAA111 CCC333])
+    end
+
+    it "filters by user_id" do
+      get vehicles_url, params: { user_id: user_b.id }, headers: headers
+      plates = json.map { |v| v["license_plate"] }
+      expect(plates).to eq(["BBB222"])
+    end
+
+    it "filters by partial license_plate" do
+      get vehicles_url, params: { license_plate: "CC" }, headers: headers
+      plates = json.map { |v| v["license_plate"] }
+      expect(plates).to eq(["CCC333"])
+    end
+
+    it "paginates results when per_page is provided" do
+      get vehicles_url, params: { per_page: 2 }, headers: headers
+      expect(json.size).to eq(2)
+    end
+
+    it "uses VehicleBlueprint for serialization" do
+      allow(VehicleBlueprint).to receive(:render_as_hash).and_call_original
+      get vehicles_url, headers: headers
+      expect(VehicleBlueprint).to have_received(:render_as_hash)
+    end
+  end
+
+  describe "POST /vehicles" do
+    let(:valid_attributes) do
+      { license_plate: "XYZ999", make: "Ford", model: "Focus", year: 2020, status: "disponible" }
+    end
+
+    xit "creates a vehicle with valid params" do
+      expect {
+        post "/vehicles", params: { vehicle: valid_attributes }, headers: headers, as: :json
+      }.to change(Vehicle, :count).by(1)
+      expect(response).to have_http_status(:created)
+      expect(json["license_plate"]).to eq("XYZ999")
+    end
+
+    xit "returns errors with invalid params" do
+      post "/vehicles", params: { vehicle: valid_attributes.merge(year: 1800) }, headers: headers, as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json["errors"]).to include("year")
+    end
+
+    xit "ignores unpermitted params" do
+      post "/vehicles", params: { vehicle: valid_attributes.merge(foo: "bar") }, headers: headers, as: :json
+      expect(response).to have_http_status(:created)
+      expect(Vehicle.last.attributes).not_to include("foo")
+    end
+  end
+
+  describe "GET /vehicles/:id" do
+    xit "returns the vehicle when it exists" do
+      get "/vehicles/#{vehicle1.id}", headers: headers, as: :json
+      expect(response).to have_http_status(:ok)
+      expect(json["id"]).to eq(vehicle1.id)
+    end
+
+    xit "returns 404 when the vehicle does not exist" do
+      get "/vehicles/0", headers: headers, as: :json
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe "PUT /vehicles/:id" do
+    xit "updates the vehicle with valid params" do
+      put "/vehicles/#{vehicle1.id}", params: { vehicle: { make: "Toyota New" } }, headers: headers, as: :json
+      expect(response).to have_http_status(:ok)
+      expect(vehicle1.reload.make).to eq("Toyota New")
+    end
+
+    xit "returns errors with invalid params" do
+      put "/vehicles/#{vehicle1.id}", params: { vehicle: { year: 1800 } }, headers: headers, as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json["errors"]).to include("year")
+    end
+  end
+
+  describe "DELETE /vehicles/:id" do
+    xit "destroys the vehicle when it exists" do
+      expect {
+        delete "/vehicles/#{vehicle2.id}", headers: headers, as: :json
+      }.to change(Vehicle, :count).by(-1)
+      expect(response).to have_http_status(:no_content)
+    end
+
+    xit "returns 404 when the vehicle does not exist" do
+      delete "/vehicles/0", headers: headers, as: :json
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+end

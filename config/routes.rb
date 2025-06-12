@@ -6,7 +6,7 @@ Sidekiq::Web.use(Rack::Auth::Basic) do |username, password|
 end
 
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, defaults: { format: :json }
   mount Sidekiq::Web => "/sidekiq"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -16,4 +16,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  resources :vehicles
 end
