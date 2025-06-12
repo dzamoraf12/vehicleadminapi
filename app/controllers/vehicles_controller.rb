@@ -1,6 +1,6 @@
 class VehiclesController < ApplicationController
   before_action :filter_list, only: %i[index]
-  before_action :find_object, only: %i[show]
+  before_action :find_object, only: %i[show update]
 
   def index
     @resource = paginate @resource, per_page: per_page_params
@@ -13,6 +13,11 @@ class VehiclesController < ApplicationController
   end
 
   def show
+    render json: render_serializer, status: :ok
+  end
+
+  def update
+    @resource.update!(vehicle_params)
     render json: render_serializer, status: :ok
   end
 
@@ -35,8 +40,8 @@ class VehiclesController < ApplicationController
 
   def vehicle_params
     parameters = params.require(:vehicle).permit(:license_plate, :make, :model, :year, :status)
-    parameters[:status] = nil unless Vehicle.statuses.include?(parameters[:status])
-    parameters[:user_id] = current_user.id
+    parameters[:status] = nil if !Vehicle.statuses.include?(parameters[:status]) && action_name == "create"
+    parameters[:user_id] = current_user.id unless params[:id].present?
 
     parameters
   end

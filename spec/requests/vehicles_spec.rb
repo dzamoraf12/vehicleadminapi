@@ -106,31 +106,30 @@ RSpec.describe "Vehicles", type: :request do
     end
   end
 
-  describe "PUT /vehicles/:id" do
-    xit "updates the vehicle with valid params" do
-      put "/vehicles/#{vehicle1.id}", params: { vehicle: { make: "Toyota New" } }, headers: headers, as: :json
+  describe "PATCH /vehicles/:id" do
+    let(:valid_attributes) { attributes_for(:vehicle, license_plate: "XYZ999") }
+
+    it "updates the vehicle with valid params" do
+      patch vehicle_url(vehicle1.id), params: { vehicle: { make: "Toyota New" } }, headers: headers, as: :json
       expect(response).to have_http_status(:ok)
       expect(vehicle1.reload.make).to eq("Toyota New")
     end
 
-    xit "returns errors with invalid params" do
-      put "/vehicles/#{vehicle1.id}", params: { vehicle: { year: 1800 } }, headers: headers, as: :json
+    it "returns errors with invalid params" do
+      patch vehicle_url(vehicle1.id), params: { vehicle: { year: 1800 } }, headers: headers, as: :json
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json["errors"]).to include("year")
-    end
-  end
-
-  describe "DELETE /vehicles/:id" do
-    xit "destroys the vehicle when it exists" do
-      expect {
-        delete "/vehicles/#{vehicle2.id}", headers: headers, as: :json
-      }.to change(Vehicle, :count).by(-1)
-      expect(response).to have_http_status(:no_content)
+      expect(json["error_hash"]).to include("year")
     end
 
-    xit "returns 404 when the vehicle does not exist" do
-      delete "/vehicles/0", headers: headers, as: :json
+    it "returns 404 when the vehicle does not exist" do
+      patch vehicle_url(0), params: { vehicle: valid_attributes }, headers: headers, as: :json
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns user not logged in error" do
+      patch vehicle_url(vehicle1.id), params: { vehicle: valid_attributes }, as: :json
+      expect(response).to have_http_status(:unauthorized)
+      expect(json["error"]).to eq("User not logged in")
     end
   end
 end
