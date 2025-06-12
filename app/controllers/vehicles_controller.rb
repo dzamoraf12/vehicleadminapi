@@ -6,6 +6,11 @@ class VehiclesController < ApplicationController
     render json: render_serializer, status: :ok
   end
 
+  def create
+    @resource = Vehicle.create!(vehicle_params)
+    render json: render_serializer, status: :created
+  end
+
   private
 
   def filter_list
@@ -21,6 +26,14 @@ class VehiclesController < ApplicationController
 
   def filter_params
     params.permit(:license_plate, :status, :user_id, :per_page)
+  end
+
+  def vehicle_params
+    parameters = params.require(:vehicle).permit(:license_plate, :make, :model, :year, :status)
+    parameters[:status] = nil unless Vehicle.statuses.include?(parameters[:status])
+    parameters[:user_id] = current_user.id
+
+    parameters
   end
 
   def render_serializer

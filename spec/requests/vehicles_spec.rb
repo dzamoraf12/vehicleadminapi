@@ -50,31 +50,41 @@ RSpec.describe "Vehicles", type: :request do
       get vehicles_url, headers: headers
       expect(VehicleBlueprint).to have_received(:render_as_hash)
     end
+
+    it "returns user not logged in error" do
+      get vehicles_url, as: :json
+      expect(response).to have_http_status(:unauthorized)
+      expect(json["error"]).to eq("User not logged in")
+    end
   end
 
   describe "POST /vehicles" do
-    let(:valid_attributes) do
-      { license_plate: "XYZ999", make: "Ford", model: "Focus", year: 2020, status: "disponible" }
-    end
+    let(:valid_attributes) { attributes_for(:vehicle, license_plate: "XYZ999") }
 
-    xit "creates a vehicle with valid params" do
+    it "creates a vehicle with valid params" do
       expect {
-        post "/vehicles", params: { vehicle: valid_attributes }, headers: headers, as: :json
+        post vehicles_url, params: { vehicle: valid_attributes }, headers: headers, as: :json
       }.to change(Vehicle, :count).by(1)
       expect(response).to have_http_status(:created)
       expect(json["license_plate"]).to eq("XYZ999")
     end
 
-    xit "returns errors with invalid params" do
-      post "/vehicles", params: { vehicle: valid_attributes.merge(year: 1800) }, headers: headers, as: :json
+    it "returns errors with invalid params" do
+      post vehicles_url, params: { vehicle: valid_attributes.merge(year: 1800) }, headers: headers, as: :json
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json["errors"]).to include("year")
+      expect(json["error_hash"]).to include("year")
     end
 
-    xit "ignores unpermitted params" do
-      post "/vehicles", params: { vehicle: valid_attributes.merge(foo: "bar") }, headers: headers, as: :json
+    it "ignores unpermitted params" do
+      post vehicles_url, params: { vehicle: valid_attributes.merge(foo: "bar") }, headers: headers, as: :json
       expect(response).to have_http_status(:created)
       expect(Vehicle.last.attributes).not_to include("foo")
+    end
+
+    it "returns user not logged in error" do
+      post vehicles_url, params: { vehicle: valid_attributes }, as: :json
+      expect(response).to have_http_status(:unauthorized)
+      expect(json["error"]).to eq("User not logged in")
     end
   end
 
