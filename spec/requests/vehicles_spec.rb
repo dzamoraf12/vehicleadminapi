@@ -89,15 +89,20 @@ RSpec.describe "Vehicles", type: :request do
   end
 
   describe "GET /vehicles/:id" do
-    xit "returns the vehicle when it exists" do
-      get "/vehicles/#{vehicle1.id}", headers: headers, as: :json
+    it "returns the vehicle when it exists" do
+      get vehicle_url(vehicle1.id), headers: headers, as: :json
       expect(response).to have_http_status(:ok)
       expect(json["id"]).to eq(vehicle1.id)
     end
 
-    xit "returns 404 when the vehicle does not exist" do
-      get "/vehicles/0", headers: headers, as: :json
+    it "returns 404 when the vehicle does not exist" do
+      get vehicle_url(0), headers: headers, as: :json
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns user not logged in error" do
+      get vehicle_url(vehicle1.id), as: :json
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 

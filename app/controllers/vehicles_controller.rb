@@ -1,5 +1,6 @@
 class VehiclesController < ApplicationController
   before_action :filter_list, only: %i[index]
+  before_action :find_object, only: %i[show]
 
   def index
     @resource = paginate @resource, per_page: per_page_params
@@ -9,6 +10,10 @@ class VehiclesController < ApplicationController
   def create
     @resource = Vehicle.create!(vehicle_params)
     render json: render_serializer, status: :created
+  end
+
+  def show
+    render json: render_serializer, status: :ok
   end
 
   private
@@ -34,6 +39,10 @@ class VehiclesController < ApplicationController
     parameters[:user_id] = current_user.id
 
     parameters
+  end
+
+  def find_object
+    @resource = Vehicle.find_by!(id: params[:id])
   end
 
   def render_serializer

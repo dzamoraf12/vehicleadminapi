@@ -8,6 +8,7 @@ class ApplicationController < ActionController::API
   rescue_from Pagy::OverflowError, with: :pagy_overflow_error
   rescue_from ActiveRecord::RecordInvalid, with: :record_invalid_error
   rescue_from ActionController::ParameterMissing, with: :bad_request_error
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   def respond_with(resource, opts = {})
     status = opts[:status] || :ok
@@ -55,5 +56,9 @@ class ApplicationController < ActionController::API
 
   def bad_request_error(exception)
     render json: { error: exception.message }, status: :bad_request
+  end
+
+  def record_not_found(e)
+    render json: { error: "Record not found" }, status: :not_found
   end
 end
