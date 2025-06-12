@@ -50,6 +50,7 @@ group :development, :test do
   gem "faker"
   gem "shoulda-matchers"
   gem "simplecov", require: false
+  gem "pundit-matchers", "~> 4.0"
 end
 
 # Jobs and background processing
@@ -66,3 +67,6 @@ gem "blueprinter"
 # Pagination api
 gem "pagy", "~> 9.3"
 gem "api-pagination"
+
+# Authorization system
+gem "pundit", "~> 2.5"
