@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   include Pagy::Backend
+  include Pundit::Authorization
 
   respond_to :json
 
@@ -9,6 +10,7 @@ class ApplicationController < ActionController::API
   rescue_from ActiveRecord::RecordInvalid, with: :record_invalid_error
   rescue_from ActionController::ParameterMissing, with: :bad_request_error
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def respond_with(resource, opts = {})
     status = opts[:status] || :ok
@@ -60,5 +62,9 @@ class ApplicationController < ActionController::API
 
   def record_not_found(e)
     render json: { error: "Record not found" }, status: :not_found
+  end
+
+  def user_not_authorized(exception)
+    render json: { error: "You are not authorized to access this resource" }, status: :forbidden
   end
 end

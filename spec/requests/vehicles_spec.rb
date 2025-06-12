@@ -59,7 +59,7 @@ RSpec.describe "Vehicles", type: :request do
       expect(json["error"]).to eq("User not logged in")
     end
 
-    xit "returns 403 for unauthorized access" do
+    it "returns 403 for unauthorized access" do
       get vehicles_url, headers: driver_headers
       expect(response).to have_http_status(:forbidden)
       expect(json["error"]).to eq("You are not authorized to access this resource")
@@ -95,7 +95,7 @@ RSpec.describe "Vehicles", type: :request do
       expect(json["error"]).to eq("User not logged in")
     end
 
-    xit "returns 403 for unauthorized access" do
+    it "returns 403 for unauthorized access" do
       post vehicles_url, params: { vehicle: valid_attributes }, headers: driver_headers
       expect(response).to have_http_status(:forbidden)
       expect(json["error"]).to eq("You are not authorized to access this resource")
@@ -119,7 +119,7 @@ RSpec.describe "Vehicles", type: :request do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    xit "returns 403 for unauthorized access" do
+    it "returns 403 for unauthorized access" do
       get vehicle_url(vehicle1.id), headers: driver_headers
       expect(response).to have_http_status(:forbidden)
       expect(json["error"]).to eq("You are not authorized to access this resource")
@@ -152,7 +152,7 @@ RSpec.describe "Vehicles", type: :request do
       expect(json["error"]).to eq("User not logged in")
     end
 
-    xit "returns 403 for unauthorized access" do
+    it "returns 403 for unauthorized access" do
       patch vehicle_url(vehicle1.id), params: { vehicle: valid_attributes }, headers: driver_headers
       expect(response).to have_http_status(:forbidden)
       expect(json["error"]).to eq("You are not authorized to access this resource")

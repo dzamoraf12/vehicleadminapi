@@ -1,6 +1,7 @@
 class VehiclesController < ApplicationController
   before_action :filter_list, only: %i[index]
   before_action :find_object, only: %i[show update]
+  before_action :authorize_resource_access, only: %i[index create show update]
 
   def index
     @resource = paginate @resource, per_page: per_page_params
@@ -52,5 +53,9 @@ class VehiclesController < ApplicationController
 
   def render_serializer
     @serializer ||= VehicleBlueprint.render_as_hash(@resource)
+  end
+
+  def authorize_resource_access
+    authorize @resource || Vehicle
   end
 end

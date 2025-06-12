@@ -8,13 +8,13 @@ RSpec.describe VehiclePolicy, type: :policy do
   context "when user is admin" do
     let(:current_user) { build_stubbed(:user, role: "admin") }
 
-    xit { is_expected.to permit_actions([:index, :show, :create, :update, :destroy]) }
+    it { is_expected.to permit_actions([:index, :show, :create, :update]) }
   end
 
   context "when user is not admin" do
     let(:current_user) { build_stubbed(:user, role: "tecnico") }
 
-    xit { is_expected.to forbid_actions([:index, :show, :create, :update, :destroy]) }
+    it { is_expected.to forbid_actions([:index, :show, :create, :update]) }
   end
 
   context "scope" do
@@ -23,12 +23,12 @@ RSpec.describe VehiclePolicy, type: :policy do
     let!(:v1)        { create(:vehicle) }
     let!(:v2)        { create(:vehicle) }
 
-    xit "admin scope returns all vehicles" do
+    it "admin scope returns all vehicles" do
       scope = VehiclePolicy::Scope.new(admin, Vehicle.all).resolve
       expect(scope).to match_array([v1, v2])
     end
 
-    xit "non-admin scope returns none" do
+    it "non-admin scope returns none" do
       scope = VehiclePolicy::Scope.new(technician, Vehicle.all).resolve
       expect(scope).to be_empty
     end

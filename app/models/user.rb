@@ -5,4 +5,16 @@ class User < ApplicationRecord
          :jwt_authenticatable, jwt_revocation_strategy: Devise::JWT::RevocationStrategies::Null
 
   enum :role, { admin: 0, tecnico: 1, chofer: 2 }
+
+  def admin?
+    role == "admin"
+  end
+
+  def technician?
+    role == "tecnico"
+  end
+
+  def driver?
+    role == "chofer"
+  end
 end
