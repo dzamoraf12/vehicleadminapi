@@ -17,7 +17,7 @@ class Vehicle < ApplicationRecord
       greater_than_or_equal_to: 1900,
       less_than_or_equal_to: Date.current.year + 1
     }
-  
+
   scope :by_plate, ->(plate) { where("license_plate ILIKE ?", "%#{plate}%") if plate.present? }
   scope :by_status, ->(status) { where(status: status) if status.present? }
   scope :by_user, ->(user_id) { where(user_id: user_id) if user_id.present? }

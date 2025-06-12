@@ -43,7 +43,7 @@ RSpec.describe UserBlueprint, type: :blueprint do
       )
     end
 
-    subject(:array) { UserBlueprint.render_as_hash([user, user2]) }
+    subject(:array) { UserBlueprint.render_as_hash([ user, user2 ]) }
 
     it "returns an array of hashes" do
       expect(array).to be_an(Array)

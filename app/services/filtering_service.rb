@@ -1,4 +1,4 @@
-class FilteringService  
+class FilteringService
   def initialize(scope, filters, associations = [])
     @scope = scope.all
     @scope = scope.includes(*associations) if associations.any?

@@ -45,7 +45,7 @@ RSpec.describe FilteringService, type: :service do
           Vehicle.all,
           { by_status: "disponible", by_user: user_a.id }
         )
-        expect(service.filter).to eq([vehicle_available_user_a])
+        expect(service.filter).to eq([ vehicle_available_user_a ])
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe FilteringService, type: :service do
 
     context "association inclusion" do
       it "applies .includes(...) when associations are provided" do
-        service = FilteringService.new(Vehicle.all, {}, [:user])
+        service = FilteringService.new(Vehicle.all, {}, [ :user ])
         result  = service.filter
         expect(result.includes_values).to include(:user)
       end

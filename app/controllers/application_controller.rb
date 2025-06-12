@@ -51,7 +51,7 @@ class ApplicationController < ActionController::API
   def record_invalid_error(e)
     error_hash = e.record.errors
     error_full_messages = e.record.errors.full_messages
-    
+
     render json: { error_hash: error_hash, full_messages: error_full_messages },
            status: :unprocessable_entity
   end

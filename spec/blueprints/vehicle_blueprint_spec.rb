@@ -61,7 +61,7 @@ RSpec.describe VehicleBlueprint, type: :blueprint do
       )
     end
 
-    subject(:array) { VehicleBlueprint.render_as_hash([vehicle, vehicle2]) }
+    subject(:array) { VehicleBlueprint.render_as_hash([ vehicle, vehicle2 ]) }
 
     it "returns an array of hashes" do
       expect(array).to be_an(Array)

@@ -31,7 +31,7 @@ class VehiclesController < ApplicationController
       status: parameters[:status],
       user_id: parameters[:user_id]
     }
-    associations = [ ]
+    associations = []
     @resource = Vehicle.filter(filters, associations)
   end
 

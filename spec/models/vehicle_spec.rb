@@ -64,7 +64,7 @@ RSpec.describe Vehicle, type: :model do
 
     context ".by_plate" do
       it "returns only the vehicles with the given plate" do
-        expect(Vehicle.by_plate("ABC123")).to match_array([v1])
+        expect(Vehicle.by_plate("ABC123")).to match_array([ v1 ])
       end
 
       it "returns all if plate is nil or empty string" do
@@ -75,7 +75,7 @@ RSpec.describe Vehicle, type: :model do
 
     context ".by_status" do
       it "returns only the vehicles with the given status" do
-        expect(Vehicle.by_status("disponible")).to match_array([v1, v3])
+        expect(Vehicle.by_status("disponible")).to match_array([ v1, v3 ])
       end
 
       it "returns all if status is nil or empty string" do
@@ -88,7 +88,7 @@ RSpec.describe Vehicle, type: :model do
       it "returns only the vehicles of the given user" do
         u = create(:user)
         v_user = create(:vehicle, user: u)
-        expect(Vehicle.by_user(u.id)).to eq([v_user])
+        expect(Vehicle.by_user(u.id)).to eq([ v_user ])
       end
 
       it "returns all if user_id is nil or empty string" do
@@ -107,31 +107,31 @@ RSpec.describe Vehicle, type: :model do
 
     it "filters by status" do
       result = Vehicle.filter({ status: "disponible" })
-      expect(result).to match_array([v1, v3])
+      expect(result).to match_array([ v1, v3 ])
     end
 
     it "filters by user_id" do
       result = Vehicle.filter({ user_id: u1.id })
-      expect(result).to match_array([v1, v2])
+      expect(result).to match_array([ v1, v2 ])
     end
 
     it "filters by license_plate" do
       result = Vehicle.filter({ license_plate: "AAA" })
-      expect(result).to eq([v1])
+      expect(result).to eq([ v1 ])
     end
 
     it "combines multiple filters" do
       result = Vehicle.filter({ status: "disponible", user_id: u1.id })
-      expect(result).to eq([v1])
+      expect(result).to eq([ v1 ])
     end
 
     it "applies includes for associations" do
-      rel = Vehicle.filter({}, [:user])
+      rel = Vehicle.filter({}, [ :user ])
       expect(rel.includes_values).to include(:user)
     end
 
     it "returns all when params empty" do
-      expect(Vehicle.filter).to match_array([v1, v2, v3])
+      expect(Vehicle.filter).to match_array([ v1, v2, v3 ])
     end
   end
 end

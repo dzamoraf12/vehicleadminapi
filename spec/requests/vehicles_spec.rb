@@ -33,13 +33,13 @@ RSpec.describe "Vehicles", type: :request do
     it "filters by user_id" do
       get vehicles_url, params: { user_id: user_b.id }, headers: headers
       plates = json.map { |v| v["license_plate"] }
-      expect(plates).to eq(["BBB222"])
+      expect(plates).to eq([ "BBB222" ])
     end
 
     it "filters by partial license_plate" do
       get vehicles_url, params: { license_plate: "CC" }, headers: headers
       plates = json.map { |v| v["license_plate"] }
-      expect(plates).to eq(["CCC333"])
+      expect(plates).to eq([ "CCC333" ])
     end
 
     it "paginates results when per_page is provided" do
