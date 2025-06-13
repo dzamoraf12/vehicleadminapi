@@ -24,7 +24,7 @@ class MaintenanceReportsController < ApplicationController
 
   private
 
-  def filter_list 
+  def filter_list
     begin
       params[:reported_at_start] = Date.parse(params[:reported_at_start]) if params[:reported_at_start].present?
       params[:reported_at_end] = Date.parse(params[:reported_at_end]) if params[:reported_at_end].present?
