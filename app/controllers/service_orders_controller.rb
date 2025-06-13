@@ -1,0 +1,2 @@
+class ServiceOrdersController < ApplicationController
+end
