@@ -8,6 +8,8 @@ class MaintenanceReport < ApplicationRecord
   validates :description, :priority, :status, :reported_at, presence: true
   validate  :reported_at_cannot_be_in_the_future
 
+  after_create :create_order_and_schedule_work, if: :alta?
+
   scope :by_status, ->(status) { where(status: status) if status.present? }
   scope :by_user, ->(user_id) { where(user_id: user_id) if user_id.present? }
   scope :by_vehicle, ->(vehicle_id) { where(vehicle_id: vehicle_id) if vehicle_id.present? }
@@ -34,5 +36,9 @@ class MaintenanceReport < ApplicationRecord
     if reported_at.present? && reported_at > Date.current
       errors.add(:reported_at, "can't be in the future")
     end
+  end
+
+  def create_order_and_schedule_work
+    CreateServiceOrderAndSchedule.new(self).call
   end
 end

@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe MaintenanceReport, type: :model do
   subject { build(:maintenance_report) }
@@ -177,6 +177,33 @@ RSpec.describe MaintenanceReport, type: :model do
       filters = { status: "non_existent_status" }
       result = MaintenanceReport.filter(filters)
       expect(result).to be_empty
+    end
+  end
+
+  describe "business rule callback" do
+    let(:user_admin) { create(:user, role: :admin) }
+    let(:user_driver) { create(:user, role: :chofer) }
+    let(:vehicle) { create(:vehicle, status: :disponible, user: user_admin) }
+
+    before { ActiveJob::Base.queue_adapter = :test }
+
+    it "invokes the service when priority is alta" do
+      report = build(:maintenance_report, status: :pendiente, priority: :alta,
+                                          vehicle: vehicle, user: user_driver)
+      service = instance_double("CreateServiceOrderAndSchedule")
+      allow(CreateServiceOrderAndSchedule).to receive(:new).with(report).and_return(service)
+      expect(service).to receive(:call)
+
+      report.save!
+    end
+
+    it "does not enqueue nor create order when priority is baja" do
+      expect {
+        create(:maintenance_report, status: :pendiente, priority: :baja,
+                                    vehicle: vehicle, user: user_driver)
+      }.not_to have_enqueued_job(ProcessServiceOrderJob)
+      expect(ServiceOrder.count).to eq(0)
+      expect(vehicle.reload.status).to eq("disponible")
     end
   end
 end

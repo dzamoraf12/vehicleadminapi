@@ -19,4 +19,5 @@ Rails.application.routes.draw do
 
   resources :vehicles, only: [ :index, :create, :show, :update ]
   resources :maintenance_reports, only: [ :index, :create, :show, :update ]
+  resources :service_orders, only: [ :index ]
 end

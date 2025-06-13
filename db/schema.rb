@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_12_232610) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_13_163257) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -29,6 +29,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_12_232610) do
     t.index ["user_id"], name: "index_maintenance_reports_on_user_id"
     t.index ["vehicle_id", "status"], name: "index_maintenance_reports_on_vehicle_id_and_status"
     t.index ["vehicle_id"], name: "index_maintenance_reports_on_vehicle_id"
+  end
+
+  create_table "service_orders", force: :cascade do |t|
+    t.decimal "estimated_cost"
+    t.integer "status"
+    t.bigint "vehicle_id", null: false
+    t.bigint "maintenance_report_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_service_orders_on_created_at"
+    t.index ["maintenance_report_id"], name: "index_service_orders_on_maintenance_report_id"
+    t.index ["status", "vehicle_id"], name: "index_service_orders_on_status_and_vehicle_id"
+    t.index ["status"], name: "index_service_orders_on_status"
+    t.index ["vehicle_id"], name: "index_service_orders_on_vehicle_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -60,5 +74,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_12_232610) do
 
   add_foreign_key "maintenance_reports", "users"
   add_foreign_key "maintenance_reports", "vehicles"
+  add_foreign_key "service_orders", "maintenance_reports"
+  add_foreign_key "service_orders", "vehicles"
   add_foreign_key "vehicles", "users"
 end
