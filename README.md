@@ -26,7 +26,7 @@ touch .env
 
 ## Environment Variables
 
-Copy the entries from `.env.template` into `.env` and fill in your values:
+Copy this variables into `.env` and fill in your values:
 
 ```dotenv
 # -----------------------
