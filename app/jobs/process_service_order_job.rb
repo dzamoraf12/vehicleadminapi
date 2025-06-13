@@ -8,10 +8,12 @@ class ProcessServiceOrderJob < ApplicationJob
     # This is a placeholder for the actual processing logic.
     order   = ServiceOrder.find(order_id)
     vehicle = order.vehicle
+    report  = order.maintenance_report
 
     sleep 10
 
     order.update!(status: :cerrada)
+    report.update!(status: :procesado)
     vehicle.update!(status: :disponible)
   end
 end

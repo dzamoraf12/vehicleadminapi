@@ -21,6 +21,7 @@ RSpec.describe ProcessServiceOrderJob, type: :job do
     described_class.perform_now(order.id)
 
     expect(order.reload.status).to eq("cerrada")
+    expect(report.reload.status).to eq("procesado")
     expect(vehicle.reload.status).to eq("disponible")
   end
 
