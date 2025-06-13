@@ -1,9 +1,9 @@
 FactoryBot.define do
   factory :maintenance_report do
-    description { "MyText" }
-    priority { 1 }
-    status { 1 }
-    reported_at { "2025-06-12 23:26:10" }
+    description { Faker::Lorem.paragraph }
+    priority { MaintenanceReport.priorities.keys.sample }
+    status { MaintenanceReport.statuses.keys.sample }
+    reported_at { Faker::Date.between(from: 5.days.ago, to: Date.today - 1.day) }
     vehicle { nil }
     user { nil }
   end
