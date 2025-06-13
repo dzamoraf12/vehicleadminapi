@@ -10,9 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_11_222252) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_12_232610) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "maintenance_reports", force: :cascade do |t|
+    t.text "description"
+    t.integer "priority"
+    t.integer "status"
+    t.datetime "reported_at"
+    t.bigint "vehicle_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reported_at"], name: "index_maintenance_reports_on_reported_at"
+    t.index ["status", "priority"], name: "index_maintenance_reports_on_status_and_priority"
+    t.index ["status", "reported_at"], name: "index_maintenance_reports_on_status_and_reported_at"
+    t.index ["user_id"], name: "index_maintenance_reports_on_user_id"
+    t.index ["vehicle_id", "status"], name: "index_maintenance_reports_on_vehicle_id_and_status"
+    t.index ["vehicle_id"], name: "index_maintenance_reports_on_vehicle_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -41,5 +58,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_11_222252) do
     t.index ["user_id"], name: "index_vehicles_on_user_id"
   end
 
+  add_foreign_key "maintenance_reports", "users"
+  add_foreign_key "maintenance_reports", "vehicles"
   add_foreign_key "vehicles", "users"
 end

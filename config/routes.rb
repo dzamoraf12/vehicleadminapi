@@ -18,4 +18,5 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   resources :vehicles, only: [ :index, :create, :show, :update ]
+  resources :maintenance_reports, only: [ :index, :create, :show, :update ]
 end
