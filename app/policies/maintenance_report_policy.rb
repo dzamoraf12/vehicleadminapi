@@ -1,18 +1,18 @@
 class MaintenanceReportPolicy < ApplicationPolicy
   def index?
-    false
+    user.admin? || user.technician?
   end
 
   def show?
-    false
+    user.admin? || user.technician?
   end
 
   def create?
-    false
+    user.technician? || user.driver?
   end
 
   def update?
-    false
+    user.admin? || user.technician?
   end
 
   class Scope < Scope
