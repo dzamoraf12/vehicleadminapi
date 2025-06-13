@@ -5,8 +5,8 @@ RSpec.describe "ServiceOrders", type: :request do
     JSON.parse(response.body)
   end
 
-  let!(:admin)     { create(:user, role: :admin) }
-  let!(:driver){ create(:user, role: :chofer) }
+  let!(:admin) { create(:user, role: :admin) }
+  let!(:driver) { create(:user, role: :chofer) }
   let(:headers) { Devise::JWT::TestHelpers.auth_headers({}, admin) }
   let(:driver_headers) { Devise::JWT::TestHelpers.auth_headers({}, driver) }
   let!(:vehicle1) { create(:vehicle, status: :disponible, user: admin) }
@@ -41,14 +41,14 @@ RSpec.describe "ServiceOrders", type: :request do
         get service_orders_url, params: { status: "abierta" }, headers: headers
 
         expect(response).to have_http_status(:ok)
-        expect(json.map { |o| o["status"] }).to match_array(["abierta", "abierta"])
+        expect(json.map { |o| o["status"] }).to match_array([ "abierta", "abierta" ])
       end
 
       it "filters by vehicle_id" do
         get service_orders_url, params: { vehicle_id: vehicle2.id }, headers: headers
 
         expect(response).to have_http_status(:ok)
-        expect(json.map { |o| o["vehicle"]["id"] }).to eq([vehicle2.id])
+        expect(json.map { |o| o["vehicle"]["id"] }).to eq([ vehicle2.id ])
       end
 
       it "filters by created_at range" do
@@ -57,9 +57,8 @@ RSpec.describe "ServiceOrders", type: :request do
             headers: headers
 
         expect(response).to have_http_status(:ok)
-        # Should include order1 and order2, but not order3
         ids = json.map { |o| o["id"] }
-        expect(ids).to match_array([order1.id, order2.id])
+        expect(ids).to match_array([ order1.id, order2.id ])
       end
 
       it "paginates results when per_page provided" do

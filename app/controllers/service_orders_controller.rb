@@ -14,7 +14,7 @@ class ServiceOrdersController < ApplicationController
     filters = {
       status: parameters[:status],
       vehicle_id: parameters[:vehicle_id],
-      created_at: parameters[:created_at_start]..parameters[:created_at_end],
+      created_at: parameters[:created_at_start]..parameters[:created_at_end]
     }
     associations = [ :vehicle, :maintenance_report ]
     @resource = ServiceOrder.filter(filters, associations)

@@ -75,7 +75,7 @@ orders_data = reports.select { |r| r.priority == "alta" }.map do |r|
   {
     maintenance_report: r,
     vehicle: r.vehicle,
-    estimated_cost: [1500, 3000, 4500].sample,
+    estimated_cost: [ 1500, 3000, 4500 ].sample,
     status: (r.status == "pendiente" ? :abierta : :cerrada),
     created_at: r.reported_at + 1.hour
   }
