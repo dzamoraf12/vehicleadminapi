@@ -6,7 +6,8 @@ RSpec.describe MaintenanceReport, type: :model do
   describe "factory" do
     it "has a valid factory" do
       expect(build(:maintenance_report, user: create(:user),
-                                        vehicle: create(:vehicle))).to be_valid
+                                        vehicle: create(:vehicle),
+                                        status: :pendiente)).to be_valid
     end
   end
 
@@ -60,7 +61,7 @@ RSpec.describe MaintenanceReport, type: :model do
       it "returns only the maintenance_reports of the given user" do
         u = create(:user)
         v = create(:vehicle, user: u)
-        m_user = create(:maintenance_report, user: u, vehicle: v)
+        m_user = create(:maintenance_report, user: u, vehicle: v, status: :pendiente)
         expect(MaintenanceReport.by_user(u.id)).to eq([ m_user ])
       end
 
@@ -73,7 +74,7 @@ RSpec.describe MaintenanceReport, type: :model do
     context ".by_vehicle" do
       it "returns only the maintenance_reports for the given vehicle" do
         v = create(:vehicle)
-        m_vehicle = create(:maintenance_report, vehicle: v, user: user)
+        m_vehicle = create(:maintenance_report, vehicle: v, user: user, status: :pendiente)
         expect(MaintenanceReport.by_vehicle(v.id)).to eq([ m_vehicle ])
       end
 
@@ -114,9 +115,9 @@ RSpec.describe MaintenanceReport, type: :model do
     let!(:m1) { create(:maintenance_report, user: u1, vehicle: v1, status: :pendiente,
                                             reported_at: Date.today - 1.day, priority: :baja) }
     let!(:m2) { create(:maintenance_report, user: u2, vehicle: v2, status: :procesado,
-                                            priority: :baja) }
+                                            reported_at: Date.today - 10.day, priority: :baja) }
     let!(:m3) { create(:maintenance_report, user: u1, vehicle: v2, status: :rechazado,
-                                            priority: :alta) }
+                                            reported_at: Date.today - 5.day, priority: :alta) }
 
     it "filters by status" do
       filters = { status: "pendiente" }
