@@ -65,7 +65,7 @@ gem "devise-jwt"
 gem "blueprinter"
 
 # Pagination api
-gem "pagy", "~> 9.3"
+gem "pagy", "~> 9.4"
 gem "api-pagination"
 
 # Authorization system
